@@ -1,0 +1,36 @@
+fastapi
+
+#as fastapi server
+uvicorn
+
+#for template
+jinja2
+
+#for static files
+aiofiles
+
+#for database 
+sqlalchemy         
+psycopg2
+
+#for loading environment variables
+python-dotenv
+
+#for email validation
+pydantic[email]
+
+#hashing
+passlib[bcrypt]
+
+#testing
+pytest
+requests
+
+#cleaning code
+pre-commit
+
+#jwt tokens
+python-jose
+
+#accessing form data
+python-multipart
