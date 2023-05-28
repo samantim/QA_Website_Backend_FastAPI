@@ -11,5 +11,5 @@ class Answer(Base):
     attachment_path = Column(String)
     user_id = Column(Integer, ForeignKey("users.id"))
     question_id = Column(Integer, ForeignKey("questions.id"))
-    replier = relationship("users", back_populates="answers")
-    question = relationship("questions", back_populates="replies")
+    replier = relationship("User", back_populates="answers")
+    question = relationship("Question", back_populates="replies")

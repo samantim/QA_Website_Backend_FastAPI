@@ -5,9 +5,11 @@ from typing import Generator
 
 engine : engine = create_engine(url=settings.DB_URL)
 
+session_local = sessionmaker(bind=engine, autoflush=False, autocommit=False)
+
 def get_db() -> Generator:
     try:
-        db = sessionmaker(bind=engine, autoflush=False, autocommit=False)
+        db = session_local()
         yield db
     finally:
-        db.close_all()
+        db.close()

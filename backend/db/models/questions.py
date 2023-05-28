@@ -10,5 +10,5 @@ class Question(Base):
     is_solved = Column(Boolean, default=False)
     attachment_path = Column(String)
     user_id = Column(Integer, ForeignKey("users.id"))
-    asker = relationship("users", back_populates="questions")
-    replies = relationship("answers", back_populates="question")
+    asker = relationship("User", back_populates="questions")
+    replies = relationship("Answer", back_populates="question")
