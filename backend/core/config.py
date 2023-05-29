@@ -2,11 +2,12 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
+#create a path of .env file and load it
 env_path = Path(".")/".env"
 load_dotenv(dotenv_path=env_path)
 
-print(env_path.absolute())
-
+#keeping all private info and config here
+#this file must be excluded from git (.gitignore)
 class Settings:
     DB_TYPE : str = os.getenv("db_type")
     DB_USERNAME : str = os.getenv("db_username")

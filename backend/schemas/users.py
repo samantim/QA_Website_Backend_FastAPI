@@ -1,6 +1,8 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 
+#user create, update, show models based on pydantic
+
 class User_Create(BaseModel):
     username : str
     email : EmailStr
@@ -16,5 +18,6 @@ class User_Show(BaseModel):
     is_active : bool
     is_admin : bool
 
+    #convert everything to json then pass it
     class Config:
         orm_mode = True

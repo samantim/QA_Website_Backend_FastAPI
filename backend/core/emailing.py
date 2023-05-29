@@ -8,15 +8,18 @@ class Email:
         self.username = username
         self.password = password
 
-    
+    #sending emails
     def send_email(self, sender : str, receivers :list[str], subject : str, body : str) -> bool:
         try:
             smtp = SMTP(self.host, self.port)
             smtp.starttls()
             smtp.login(self.username, self.password)
-            
+                              
+            #if more than one recipient, sendmail method get them in comma seperated format
             all_receivers = ", ".join(receivers)
             crlf = CRLF
+            #this is the contracted format of email
+            #we can also use MIMEMultipart to create email contents
             message = f"""From: {sender}{crlf}To: {all_receivers}{crlf}Subject: {subject}{crlf}{crlf}{body}"""
 
             smtp.sendmail(sender, receivers, message)
