@@ -34,5 +34,5 @@ pre-commit
 #jwt tokens
 python-jose
 
-#accessing form data
+#accessing form data and also updload files in fastapi
 python-multipart
