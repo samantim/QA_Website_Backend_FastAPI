@@ -14,7 +14,7 @@ def register_user(user : User_Create, db : Session = Depends(get_db)):
     #saving in db
     user = create_user(user=user, db = db)
     if not user:
-        raise  HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Registration was not seccessful!")
+        raise  HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Registration was not seccessful!")
     #sending a verification email -> method is placed in route_login
     send_verification_email(user.email)
     return user
