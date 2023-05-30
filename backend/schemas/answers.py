@@ -2,12 +2,13 @@ from pydantic import BaseModel
 from datetime import datetime
 
 #question show models based on pydantic
-class Question_Show(BaseModel):
+class Answer_Show(BaseModel):
     description : str
     date_posted : datetime
-    is_solved : bool
+    is_correct : bool
     attachment_path : str
-    asker : str #this is a foreign value (user.name) from users table
+    question : str #this is a foreign value (question.description) from question table
+    replier : str #this is a foreign value (user.name) from users table
 
     #convert everything to json then pass it
     class Config:

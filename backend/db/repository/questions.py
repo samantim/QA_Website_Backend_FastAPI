@@ -44,7 +44,7 @@ def read_questions(db: Session) -> Query[Question_Show]:
         Question.is_solved,
         Question.attachment_path,
         User.username.label("asker") #get from joined table (User) with alias
-        ).join(User, Question.user_id == User.id).filter()
+        ).join(User, Question.user_id == User.id)
     return questions
 
 #get all questions
