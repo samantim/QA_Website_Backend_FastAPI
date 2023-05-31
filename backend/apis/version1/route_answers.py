@@ -25,7 +25,7 @@ def show_all_answers(db : Session = Depends(get_db), current_active_user : User 
     answers = read_all_answers(db)
     return answers
 
-#get a answer
+#get an answer
 @answer_router.get("/{id}", response_model=Answer_Show)
 def show_answer(answer_id : int, db : Session = Depends(get_db)):
     answer = read_answer_by_id(answer_id, db)
@@ -33,7 +33,7 @@ def show_answer(answer_id : int, db : Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"answer id {answer_id} not found!")
     return answer
 
-#delete a answer
+#delete an answer
 @answer_router.delete("/delete/{id}")
 def delete_answer(answer_id : int, db : Session = Depends(get_db), current_active_user : User = Depends(get_current_active_user)):
     #only admin can delete a answers

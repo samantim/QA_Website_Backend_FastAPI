@@ -56,11 +56,11 @@ def read_answers(db: Session) -> Query[Answer_Show]:
 def read_all_answers(db : Session) -> list[Answer_Show]:
     return read_answers(db).all()
 
-#get a answer based on id
+#get an answer based on id
 def read_answer_by_id(answer_id:int, db : Session) -> Answer_Show:
     return read_answers(db).filter(Answer.id == answer_id).first()
 
-#delete a answer based on id
+#delete an answer based on id
 def delete_answer_by_id(answer_id : int, db : Session):
     answers =  db.query(Answer).filter(Answer.id == answer_id)
     if not answers.first():
