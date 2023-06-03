@@ -27,6 +27,7 @@ passlib[bcrypt]
 #testing
 pytest
 requests
+httpx
 
 #cleaning code
 pre-commit
