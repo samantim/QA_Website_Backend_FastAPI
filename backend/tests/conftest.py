@@ -1,6 +1,11 @@
+
+##############################################################################
+#Consider name "conftest.py" is a convention and should be use without change#
+##############################################################################
+
+import pytest
 from fastapi.testclient import TestClient
 from fastapi import FastAPI
-import pytest
 from sqlalchemy import engine, create_engine
 from typing import Any, Generator
 from sqlalchemy.orm import sessionmaker
@@ -12,10 +17,9 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) 
 
 #after backend folder has been added, we can import modules like this
+from apis.base import base_router
 from db.base import Base
-from apis.base import base_router 
 from db.session import get_db
-
 
 #create and connect to SQLite db "test_db.db" which will be placed in tests folder root
 db_url = "sqlite:///./test_db.db"
@@ -24,7 +28,7 @@ Session_Test = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
 #create new app
 def start_app():
-    app = FastAPI()
+    app = FastAPI(debug=True)
     app.include_router(base_router)
     return app
 
@@ -44,7 +48,7 @@ def app() -> Generator[FastAPI, Any, None]:
 #(actually in presence of drop_all, rolling back transactions would be unnecessary)
 #consider that this fixture is using in client fixture as input
 @pytest.fixture(scope="function")
-def db_session(app : FastAPI) -> Generator[Session_Test, Any, None]:
+def db_session() -> Generator[Session_Test, Any, None]:
     with engine_test.connect() as connection:
         #setup phase
         connection.begin()
@@ -58,7 +62,7 @@ def db_session(app : FastAPI) -> Generator[Session_Test, Any, None]:
 #this fixture is used in test functions as testclient which contains db connections
 #name of parameters are important to be the same as declared fixtures above (app, db_session) s-> describe above)
 @pytest.fixture(scope="function")
-def client(app1 : FastAPI, db_session : Session_Test) -> Generator[TestClient, Any, None]:
+def client(app : FastAPI, db_session : Session_Test) -> Generator[TestClient, Any, None]:
     #here we declare a new get_db dependancy and override the original get_db with it
     def override_get_db():
         try:
@@ -66,7 +70,7 @@ def client(app1 : FastAPI, db_session : Session_Test) -> Generator[TestClient, A
         finally:
             pass
 
-    app.dependency_overrides["get_db"] = override_get_db
+    app.dependency_overrides[get_db] = override_get_db
 
     #create test client and pass it through
     with TestClient(app) as client:
