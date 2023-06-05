@@ -20,13 +20,13 @@ def register_user(user : User_Create, db : Session = Depends(get_db)):
     return user
 
 #updating user info (Based of User_Update model only password and is_active can be updated->Optional)
-@user_router.put("/change/{id}")
-def change_user(id : int, user : User_Update, db : Session = Depends(get_db), current_active_user : User = Depends(get_current_active_user)):
+@user_router.put("/change/{user_id}")
+def change_user(user_id : int, user : User_Update, db : Session = Depends(get_db), current_active_user : User = Depends(get_current_active_user)):
     #get current_active_user as dependency and check if the current user is editing him/herself or admin user
-    if not (current_active_user.id == id or current_active_user.is_admin):
+    if not (current_active_user.id == user_id or current_active_user.is_admin):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Not Authorized!")
     #updating in db
-    result = update_user(user_id=id, user=user, db=db)
+    result = update_user(user_id=user_id, user=user, db=db)
     if not result:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User id {id} not found!")
     return {"msg" : "Successfully updated data."}

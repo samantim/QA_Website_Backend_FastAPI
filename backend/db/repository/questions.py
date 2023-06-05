@@ -1,10 +1,12 @@
 from schemas.questions import Question_Show
 from sqlalchemy.orm import Session, Query
+from sqlalchemy import exc
 from datetime import datetime
 from db.models.questions import Question
 from db.models.users import User
 from fastapi import UploadFile, File
 from pathlib import Path
+
 
 #create a new question with attachment file
 def create_question(description : str, attachment : UploadFile, db : Session, current_active_user : User) -> Question:
@@ -19,10 +21,11 @@ def create_question(description : str, attachment : UploadFile, db : Session, cu
     db.add(question)
     db.commit()
     db.refresh(question)
-    #create path of new file in attachment folder placed in project root folder
-    local_path : Path = Path(".")/"attachments"/attachment.filename
-    #save attachment in hard disk
-    save_attachment_file(attachment, local_path.absolute())
+    if attachment:
+        #create path of new file in attachment folder placed in project root folder
+        local_path : Path = Path(".")/"attachments"/attachment.filename
+        #save attachment in hard disk
+        save_attachment_file(attachment, local_path.absolute())
     #extracting current username and add it to question dict for showing
     current_username : User = db.query(User).filter(User.id == current_active_user.id).first()
     question.__dict__.update({"asker" : current_username.username})
@@ -57,10 +60,13 @@ def read_question_by_id(question_id:int, db : Session) -> Question_Show:
 
 #delete a question based on id
 def delete_question_by_id(question_id : int, db : Session):
-    questions =  db.query(Question).filter(Question.id == question_id)
-    if not questions.first():
+    try:
+        questions =  db.query(Question).filter(Question.id == question_id)
+        if not questions.first():
+            return False
+        #for update and delete we should make a query which contains prefered results and then use its update or delete methods
+        questions.delete()
+        db.commit()
+        return True
+    except exc.IntegrityError:
         return False
-    #for update and delete we should make a query which contains prefered results and then use its update or delete methods
-    questions.delete()
-    db.commit()
-    return True

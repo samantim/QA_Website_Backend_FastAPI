@@ -29,6 +29,7 @@ def get_current_user(token : str = Depends(oauth2_scheme), db : Session = Depend
         user = get_user_by_email(username, db)
         if not user:
             raise authorization_ex
+        print(user)
         return user
     except JWTError:
         raise authorization_ex

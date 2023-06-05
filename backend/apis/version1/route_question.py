@@ -26,7 +26,7 @@ def show_all_questions(db : Session = Depends(get_db), current_active_user : Use
     return questions
 
 #get a question
-@question_router.get("/{id}", response_model=Question_Show)
+@question_router.get("/{question_id}", response_model=Question_Show)
 def show_question(question_id : int, db : Session = Depends(get_db)):
     question = read_question_by_id(question_id, db)
     if not question:
@@ -34,7 +34,7 @@ def show_question(question_id : int, db : Session = Depends(get_db)):
     return question
 
 #delete a question
-@question_router.delete("/delete/{id}")
+@question_router.delete("/delete/{question_id}")
 def delete_question(question_id : int, db : Session = Depends(get_db), current_active_user : User = Depends(get_current_active_user)):
     #only admin can delete a questions
     if not current_active_user.is_admin:

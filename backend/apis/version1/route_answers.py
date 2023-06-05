@@ -17,16 +17,16 @@ def add_answer(description : str = Form(), question_id : int = Form(), attachmen
     return answer
 
 #get all answers
-@answer_router.get("/get/all", response_model=list[Answer_Show])
-def show_all_answers(db : Session = Depends(get_db), current_active_user : User = Depends(get_current_active_user)):
+@answer_router.get("/get/all/{question_id}", response_model=list[Answer_Show])
+def show_all_answers(question_id : int, db : Session = Depends(get_db), current_active_user : User = Depends(get_current_active_user)):
     #only admin can get all answers
     if not current_active_user.is_admin:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authorized to retrieve all answers!")
-    answers = read_all_answers(db)
+    answers = read_all_answers(question_id, db)
     return answers
 
 #get an answer
-@answer_router.get("/{id}", response_model=Answer_Show)
+@answer_router.get("/{answer_id}", response_model=Answer_Show)
 def show_answer(answer_id : int, db : Session = Depends(get_db)):
     answer = read_answer_by_id(answer_id, db)
     if not answer:
@@ -34,7 +34,7 @@ def show_answer(answer_id : int, db : Session = Depends(get_db)):
     return answer
 
 #delete an answer
-@answer_router.delete("/delete/{id}")
+@answer_router.delete("/delete/{answer_id}")
 def delete_answer(answer_id : int, db : Session = Depends(get_db), current_active_user : User = Depends(get_current_active_user)):
     #only admin can delete a answers
     if not current_active_user.is_admin:
@@ -42,4 +42,4 @@ def delete_answer(answer_id : int, db : Session = Depends(get_db), current_activ
     result = delete_answer_by_id(answer_id, db)
     if not result:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No answer to delete!")
-    return {"msg" : f"answer id {answer_id} seccessfully deleted!"}
+    return {"msg" : f"Answer id {answer_id} seccessfully deleted!"}

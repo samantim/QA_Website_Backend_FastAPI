@@ -1,5 +1,6 @@
 from schemas.answers import Answer_Show
 from sqlalchemy.orm import Session, Query
+from sqlalchemy import exc
 from datetime import datetime
 from db.models.answers import Answer
 from db.models.users import User
@@ -21,10 +22,11 @@ def create_answer(description : str, question_id : int, attachment : UploadFile,
     db.add(answer)
     db.commit()
     db.refresh(answer)
-    #create path of new file in attachment folder placed in project root folder
-    local_path : Path = Path(".")/"attachments"/attachment.filename
-    #save attachment in hard disk
-    save_attachment_file(attachment, local_path.absolute())
+    if attachment:
+        #create path of new file in attachment folder placed in project root folder
+        local_path : Path = Path(".")/"attachments"/attachment.filename
+        #save attachment in hard disk
+        save_attachment_file(attachment, local_path.absolute())
     #extracting current username, current question description and add it to answer dict for showing
     current_user : User = db.query(User).filter(User.id == current_active_user.id).first()
     answer.__dict__.update({"replier" : current_user.username})
@@ -42,7 +44,7 @@ def save_attachment_file(attachment : UploadFile, output_path : str):
 
 #read all answer in answer_Show format
 def read_answers(db: Session) -> Query[Answer_Show]:
-    answers : list[Answer_Show] = db.query(
+    answers : Query[Answer_Show] = db.query(
         Answer.description,
         Question.description.label("question"), #get from joined table (Question) with alias
         Answer.date_posted,
@@ -53,8 +55,8 @@ def read_answers(db: Session) -> Query[Answer_Show]:
     return answers
 
 #get all answers
-def read_all_answers(db : Session) -> list[Answer_Show]:
-    return read_answers(db).all()
+def read_all_answers(question_id: int, db : Session) -> list[Answer_Show]:
+    return read_answers(db).filter(Answer.question_id == question_id).all()
 
 #get an answer based on id
 def read_answer_by_id(answer_id:int, db : Session) -> Answer_Show:
@@ -62,10 +64,13 @@ def read_answer_by_id(answer_id:int, db : Session) -> Answer_Show:
 
 #delete an answer based on id
 def delete_answer_by_id(answer_id : int, db : Session):
-    answers =  db.query(Answer).filter(Answer.id == answer_id)
-    if not answers.first():
+    try:
+        answers =  db.query(Answer).filter(Answer.id == answer_id)
+        if not answers.first():
+            return False
+        #for update and delete we should make a query which contains prefered results and then use its update or delete methods
+        answers.delete()
+        db.commit()
+        return True
+    except exc.IntegrityError:
         return False
-    #for update and delete we should make a query which contains prefered results and then use its update or delete methods
-    answers.delete()
-    db.commit()
-    return True

@@ -10,7 +10,7 @@ class Answer(Base):
     date_posted = Column(DateTime, nullable=False)
     is_correct = Column(Boolean, default=False)
     attachment_path = Column(String)
-    user_id = Column(Integer, ForeignKey("users.id"))
+    user_id = Column(Integer, ForeignKey("users.id")) 
     question_id = Column(Integer, ForeignKey("questions.id"))
     replier = relationship("User", back_populates="answers")
     question = relationship("Question", back_populates="replies")

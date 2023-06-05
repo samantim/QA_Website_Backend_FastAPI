@@ -30,9 +30,9 @@ def test_user_register_badrequest(client):
 
 def test_change_user(client, db_session):
     #create new user
-    input = {"username" : "john",
+    input = {"username" : "jack",
              "password" : "123",
-             "email" : "john@example.com"
+             "email" : "jack@example.com"
              }
     response = client.post("/users/register", json = input)
     assert response.status_code == status.HTTP_200_OK
@@ -48,7 +48,7 @@ def test_change_user(client, db_session):
 
     #login with new user
     input = {"username" : newuser_email,
-             "password" : "123",
+             "password" : "123"
              }
     #To send a form via post method we should use data parameter instead of json
     response = client.post("/login/token", data = input)

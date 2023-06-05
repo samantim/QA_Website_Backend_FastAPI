@@ -6,6 +6,7 @@ from typing import Generator
 #here we keep database session
 
 engine : engine = create_engine(url=settings.DB_URL)
+#engine = create_engine("sqlite:///./test_db.db")
 
 session_local = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 

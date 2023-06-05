@@ -40,6 +40,18 @@ def update_user(user_id : int, user : User_Update, db : Session) -> bool:
     db.commit()
     return True
 
+#updating a user info
+def make_user_admin(user_id : int, db : Session) -> bool:
+    found_user = get_users(user_id, db)
+    if not found_user.first():
+        return False
+
+    user = {"is_admin" : True}
+    #only update fields which is given in input dic
+    found_user.update(user)
+    db.commit()
+    return True
+
 #get all users
 def read_all_users(db : Session) -> list[User]:
     return db.query(User).all()
