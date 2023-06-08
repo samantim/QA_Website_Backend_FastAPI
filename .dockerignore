@@ -1,0 +1,7 @@
+backend/__pycache__
+backend/attachments
+backend/tests/test_db.db
+backend/tests/attachments
+backend/tests/.pytest_cachecd
+backend/tests/__pycache__
+**/.env
