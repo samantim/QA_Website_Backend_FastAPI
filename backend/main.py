@@ -1,7 +1,7 @@
 from db.session import engine
 from db.base import Base
 from fastapi import FastAPI
-from apis.base import base_router
+from apis.base import base_router       
 
 #create all tables based on Base as_delarative
 def create_table():
