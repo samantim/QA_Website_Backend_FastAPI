@@ -11,7 +11,7 @@ def create_table():
 def include_routers(app : FastAPI):
     app.include_router(base_router)
 
-#start server
+#start_server
 def start_app() -> FastAPI:
     app = FastAPI(debug=True)
     create_table()
